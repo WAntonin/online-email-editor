@@ -26,7 +26,6 @@
   },
   "engines": {
 	  "npm": "please use pnpm",
-	  "pnpm": "please use pnpm",
 	  "yarn": ">= 1.22.21"
   }
 }
