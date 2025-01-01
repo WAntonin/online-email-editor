@@ -1,4 +1,10 @@
-const Button = ({ text, onClick }: { text: string; onClick: () => void }) => {
+const ButtonPrimary = ({
+  text,
+  onClick,
+}: {
+  text: string;
+  onClick: () => void;
+}) => {
   return (
     <button
       onClick={onClick}
@@ -9,4 +15,4 @@ const Button = ({ text, onClick }: { text: string; onClick: () => void }) => {
   );
 };
 
-export default Button;
+export default ButtonPrimary;

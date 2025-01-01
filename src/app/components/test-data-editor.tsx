@@ -1,4 +1,8 @@
 import Editor from "@monaco-editor/react";
+import ButtonClose from "./button-close";
+import CodeStatus from "./editor-status-bar.tsx/editor-code-status";
+import { useState } from "react";
+import EditorStatusBarWrapper from "./editor-status-bar.tsx/editor-status-bar-wrapper";
 
 const editorOptions = {
   minimap: {
@@ -10,33 +14,50 @@ const TestDataEditor = ({
   data,
   visible,
   onChange,
-  setVisibility,
+  setVisible,
 }: {
   data: string;
   visible: boolean;
   onChange: (data: string) => void;
-  setVisibility: () => void;
+  setVisible: (show: boolean) => void;
 }) => {
+  const [isValidJson, setIsValidJson] = useState(false);
   return (
     <div
-      className={`fixed top-0 right-0 w-1/3 h-full bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
-        visible ? "translate-x-0" : "translate-x-full"
+      className={`w-screen h-screen flex items-center justify-center absolute bottom-0 top-0 ${
+        !visible && "invisible"
       }`}
     >
-      <button
-        className="absolute z-10 top-2 right-2 text-white hover:text-gray-700"
-        onClick={() => setVisibility()}
+      <div
+        id="slideover-container"
+        className={`w-full h-full fixed inset-0 ${!visible && "invisible"}`}
       >
-        &times;
-      </button>
-      <Editor
-        value={data}
-        language="json"
-        defaultValue="Please enter your JSON data."
-        theme="vs-dark"
-        onChange={(newvalue?: string) => onChange(newvalue || "")}
-        options={editorOptions}
-      />
+        <div
+          onClick={() => setVisible(false)}
+          id="slideover-bg"
+          className={`w-full h-full duration-500 ease-out transition-all inset-0 absolute bg-gray-900 ${
+            visible ? "opacity-50" : "opacity-0"
+          }`}
+        ></div>
+        <div
+          className={`flex flex-col fixed top-0 right-0 w-1/3 h-full bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
+            visible ? "translate-x-0 z-20" : "translate-x-full"
+          }`}
+        >
+          <EditorStatusBarWrapper>
+            <CodeStatus language="json" isValid={isValidJson} />
+            <ButtonClose onClick={() => setVisible(false)} />
+          </EditorStatusBarWrapper>
+          <Editor
+            value={data}
+            language="json"
+            defaultValue="Please enter your JSON data."
+            theme="vs-dark"
+            onChange={(newvalue?: string) => onChange(newvalue || "")}
+            options={editorOptions}
+          />
+        </div>
+      </div>
     </div>
   );
 };
