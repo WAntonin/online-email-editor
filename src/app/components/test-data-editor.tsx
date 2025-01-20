@@ -19,9 +19,23 @@ const TestDataEditor = ({
   data: string;
   visible: boolean;
   onChange: (data: string) => void;
-  setVisible: (show: boolean) => void;
+  setVisible: () => void;
 }) => {
   const [isValidJson, setIsValidJson] = useState(false);
+  const handleDataChange = (value?: string) => {
+    if (!value) {
+      setIsValidJson(false);
+      return;
+    }
+    try {
+      JSON.parse(value);
+      onChange(value);
+      setIsValidJson(true);
+    } catch {
+      setIsValidJson(false);
+    }
+  };
+
   return (
     <div
       className={`w-screen h-screen flex items-center justify-center absolute bottom-0 top-0 ${
@@ -33,7 +47,7 @@ const TestDataEditor = ({
         className={`w-full h-full fixed inset-0 ${!visible && "invisible"}`}
       >
         <div
-          onClick={() => setVisible(false)}
+          onClick={setVisible}
           id="slideover-bg"
           className={`w-full h-full duration-500 ease-out transition-all inset-0 absolute bg-gray-900 ${
             visible ? "opacity-50" : "opacity-0"
@@ -46,14 +60,14 @@ const TestDataEditor = ({
         >
           <EditorStatusBarWrapper>
             <CodeStatus language="json" isValid={isValidJson} />
-            <ButtonClose onClick={() => setVisible(false)} />
+            <ButtonClose onClick={setVisible} />
           </EditorStatusBarWrapper>
           <Editor
             value={data}
             language="json"
             defaultValue="Please enter your JSON data."
             theme="vs-dark"
-            onChange={(newvalue?: string) => onChange(newvalue || "")}
+            onChange={handleDataChange}
             options={editorOptions}
           />
         </div>

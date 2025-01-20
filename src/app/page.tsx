@@ -5,11 +5,12 @@ import CodeEditor from "./components/editor";
 import HtmlPreviewer from "./components/html-previewer";
 import ButtonPrimary from "./components/button-primary";
 import TestDataEditor from "./components/test-data-editor";
+import useToggle from "@/hooks/useToggle";
 
 export type TestData = { [key: string]: string | number } | undefined;
 
 export default function Home() {
-  const [showDataEditor, setShowDataEditor] = useState(false);
+  const [showDataEditor, toggleDataEditor] = useToggle(false);
   const [code, setCode] = useState("type here");
   const [data, setData] = useState<TestData>();
 
@@ -27,25 +28,16 @@ export default function Home() {
       <CodeEditor code={code} onChange={changeCode} />
       <div className="p-2">
         <div className="flex items-start justify-end">
-          <ButtonPrimary
-            onClick={() => setShowDataEditor(true)}
-            text="Set test data"
-          />
+          <ButtonPrimary onClick={toggleDataEditor} text="Edit test data" />
         </div>
         <HtmlPreviewer code={code} data={data} />
         <TestDataEditor
           data={JSON.stringify(data, null, 2)}
           onChange={changeData}
           visible={showDataEditor}
-          setVisible={setShowDataEditor}
+          setVisible={toggleDataEditor}
         />
       </div>
-      {/* {showDataEditor && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-10"
-          onClick={() => setShowDataEditor(false)}
-        ></div>
-      )} */}
     </div>
   );
 }

@@ -8,7 +8,7 @@ const ButtonPrimary = ({
   return (
     <button
       onClick={onClick}
-      className="p-3 bg-purple-700 transition duration-700 ease-in-out hover:bg-purple-500 rounded-xl"
+      className="px-3 py-1 transition ease-in-out duration-200 shadow-md shadow-slate-700 hover:shadow-sm hover:shadow-slate-700 rounded-xl text-slate-500 hover:text-slate-700"
     >
       {text}
     </button>
