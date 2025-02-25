@@ -2,22 +2,39 @@
 
 import { useEffect, useState } from "react";
 import Handlebars from "handlebars";
-import { TestData } from "../page";
+import { useTemplates } from "./templates/templates-context";
+import { Template, TemplateId } from "./templates/template";
 
-const HtmlPreviewer = ({ code, data }: { code: string; data: TestData }) => {
-  const [parsedHtml, setParsedHtml] = useState(code);
-
+export default function HtmlPreviewer({
+  templateId,
+}: {
+  templateId: TemplateId;
+}) {
+  const templates = useTemplates();
+  const [filledTemplate, setFilledTemplate] = useState("");
   useEffect(() => {
-    try {
-      const handlebarsTemplate = Handlebars.compile(code);
-      const parsed = handlebarsTemplate(data);
-      setParsedHtml(parsed);
-    } catch (err) {
-      console.error(err);
+    const selectedTemplate = findTemplateById(templates, templateId);
+    if (!selectedTemplate) {
+      console.error("Template not found");
+      return;
     }
-  }, [code, data]);
+    try {
+      const handlebarsTemplate = Handlebars.compile(selectedTemplate.code);
+      const filled = handlebarsTemplate(JSON.parse(selectedTemplate.testData));
+      setFilledTemplate(filled);
+      console.log("Filled template", filled);
+    } catch (error) {
+      console.error("Error filling template", error);
+    }
+  }, [templateId, templates]);
 
-  return <div dangerouslySetInnerHTML={{ __html: parsedHtml }}></div>;
+  return (
+    <>
+      <div dangerouslySetInnerHTML={{ __html: filledTemplate }}></div>
+    </>
+  );
+}
+
+const findTemplateById = (templates: Template[], id: TemplateId) => {
+  return templates.find((t) => t.id === id);
 };
-
-export default HtmlPreviewer;

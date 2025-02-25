@@ -1,8 +1,13 @@
 import Editor from "@monaco-editor/react";
 import ButtonClose from "./button-close";
 import CodeStatus from "./editor-status-bar.tsx/editor-code-status";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditorStatusBarWrapper from "./editor-status-bar.tsx/editor-status-bar-wrapper";
+import { TemplateId } from "./templates/template";
+import {
+  useTemplates,
+  useTemplatesDispatch,
+} from "./templates/templates-context";
 
 const editorOptions = {
   minimap: {
@@ -11,27 +16,45 @@ const editorOptions = {
 };
 
 const TestDataEditor = ({
-  data,
+  templateId,
   visible,
-  onChange,
   setVisible,
 }: {
-  data: string;
+  templateId: TemplateId;
   visible: boolean;
-  onChange: (data: string) => void;
   setVisible: () => void;
 }) => {
   const [isValidJson, setIsValidJson] = useState(false);
+  const templates = useTemplates();
+  const dispatch = useTemplatesDispatch();
+  const [selectedTemplate, setSelectedTemplate] = useState(
+    templates.find((t) => t.id === templateId) || templates[0]
+  );
+
+  useEffect(() => {
+    setSelectedTemplate(
+      templates.find((t) => t.id === templateId) || templates[0]
+    );
+  }, [templateId, templates]);
   const handleDataChange = (value?: string) => {
     if (!value) {
       setIsValidJson(false);
       return;
     }
+
     try {
       JSON.parse(value);
-      onChange(value);
       setIsValidJson(true);
+      console.log("update", selectedTemplate);
+      dispatch({
+        type: "update",
+        template: {
+          ...selectedTemplate,
+          testData: value,
+        },
+      });
     } catch {
+      console.error("Invalid JSON");
       setIsValidJson(false);
     }
   };
@@ -63,7 +86,7 @@ const TestDataEditor = ({
             <ButtonClose onClick={setVisible} />
           </EditorStatusBarWrapper>
           <Editor
-            value={data}
+            value={selectedTemplate.testData}
             language="json"
             defaultValue="Please enter your JSON data."
             theme="vs-dark"
