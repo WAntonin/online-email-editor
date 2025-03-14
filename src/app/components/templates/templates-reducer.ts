@@ -1,4 +1,9 @@
 import { Template } from "./template";
+import {
+  addTemplate,
+  removeTemplate,
+  updateTemplate,
+} from "./templates-actions";
 
 export type TemplateAction = {
   type: "add" | "remove" | "update";
@@ -10,16 +15,11 @@ export default function templatesReducer(
 ) {
   switch (action.type) {
     case "add":
-      console.log("Adding template", action.template);
-      return [...templates, action.template];
+      return addTemplate(templates, action.template);
     case "remove":
-      return templates.filter((template) => template.id !== action.template.id);
+      return removeTemplate(templates, action.template);
     case "update":
-      const newState = templates.map((template) =>
-        template.id === action.template.id ? action.template : template
-      );
-      console.log("Updating template", newState);
-      return newState;
+      return updateTemplate(templates, action.template);
     default:
       throw Error(`Unknown Template action type:  ${action.type}`);
   }
