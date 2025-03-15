@@ -4,22 +4,10 @@ import {
   removeTemplate,
   updateTemplate,
 } from "@/app/components/templates/templates-actions";
-
-const template1 = {
-  id: 1,
-  name: "Template 1",
-  code: "Content 1",
-  testData: "test",
-  isTailwind: true,
-};
-
-const template2 = {
-  id: 2,
-  name: "Template 2",
-  code: "Content 2",
-  testData: "test",
-  isTailwind: true,
-};
+import {
+  template1,
+  template2,
+} from "@/app/components/templates/templates-data";
 
 describe("templates-actions", () => {
   describe("addTemplate", () => {
